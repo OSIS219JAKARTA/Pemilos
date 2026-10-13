@@ -1,403 +1,171 @@
-/* ==========================================
-   GLOBAL VARIABLES & RESET
-   ========================================== */
 :root {
-  --primary-color: #1b4f91;
-  --dark-blue: #1b4f91;
+  --primary-blue: #1b4f91;
+  --dark-blue: #0d234a;
   --light-blue: #f0f4f9;
-  --success: #28a745;
-  --danger: #d9534f;
-  --warning: #f0ad4e;
   --white: #ffffff;
-  --gray: #cccccc;
-  --dark-gray: #333333;
-  --bg-color: #f4f7f6;
+  --gray: #e2e8f0;
+  --text-dark: #2d3748;
+  --danger: #e53e3e;
+  --success: #38a169;
+  --warning: #dd6b20;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background-color: var(--light-blue); color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+
+/* Header & Footer */
+header.app-header { background-color: var(--white); border-bottom: 3px solid var(--primary-blue); padding: 15px 20px; display: flex; align-items: center; justify-content: center; position: relative; width: 100%; z-index: 10; }
+.header-brand { display: flex; align-items: center; gap: 15px; text-align: center; }
+.header-brand img { height: 40px; width: auto; }
+.header-brand h1 { font-size: 1.1rem; color: var(--dark-blue); font-weight: 700; text-transform: uppercase; }
+footer.app-footer { text-align: center; padding: 15px; background-color: var(--dark-blue); color: var(--white); font-size: 0.85rem; margin-top: auto; width: 100%; }
+
+/* Buttons & Inputs */
+button { cursor: pointer; padding: 10px 15px; border: none; border-radius: 6px; font-weight: 600; transition: 0.2s; }
+button:hover { opacity: 0.85; }
+.btn-primary { background-color: var(--primary-blue); color: var(--white); }
+.btn-danger { background-color: var(--danger); color: var(--white); }
+.btn-success { background-color: var(--success); color: var(--white); }
+.btn-warning { background-color: var(--warning); color: var(--white); }
+input, select, textarea { width: 100%; padding: 10px; margin: 8px 0 15px; border: 1px solid var(--gray); border-radius: 6px; outline: none; font-size: 1rem; background: #fff; }
+input:disabled, select:disabled { background-color: #e2e8f0; cursor: not-allowed; }
+
+/* Tabel */
+.table-responsive { width: 100%; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 6px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-top: 15px; min-width: 500px; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--gray); font-size: 0.95rem; }
+th { background-color: var(--primary-blue); color: var(--white); }
+
+/* =========================================
+   PERBAIKAN UTAMA: LAYOUT ADMIN & SIDEBAR
+   (Hapus !important pada display agar JS bisa bekerja)
+   ========================================= */
+.admin-layout { 
+  display: flex; /* <-- Ini yang bikin error sebelumnya, JANGAN pakai !important disini */
+  flex: 1; 
+  flex-direction: row; 
+  width: 100%;
+  min-height: calc(100vh - 130px);
+  align-items: stretch;
+}
+
+.sidebar { 
+  width: 260px; 
+  min-width: 260px;
+  background-color: var(--dark-blue); 
+  color: var(--white); 
+  padding: 20px 0; 
+  flex-shrink: 0; 
+  box-shadow: 4px 0 10px rgba(0,0,0,0.05);
+}
+
+.sidebar h3 { 
+  padding: 0 20px 15px; 
+  font-size: 1rem; 
+  border-bottom: 1px solid rgba(255,255,255,0.1); 
+}
+
+.sidebar ul { 
+  list-style: none; 
+  margin-top: 15px; 
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body {
-  background-color: var(--bg-color);
-  color: var(--dark-gray);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.sidebar li { 
+  padding: 15px 20px; 
+  cursor: pointer; 
+  transition: 0.2s; 
+  border-left: 4px solid transparent; 
+  font-size: 0.95rem; 
 }
 
-/* ==========================================
-   HEADER & FOOTER
-   ========================================== */
-.app-header {
-  background-color: var(--primary-color);
-  color: var(--white);
-  padding: 15px 30px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+.sidebar li:hover, .sidebar li.active { 
+  background-color: var(--primary-blue); 
+  border-left: 4px solid var(--white); 
 }
 
-.header-brand {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+.main-content { 
+  flex: 1; 
+  padding: 30px; 
+  overflow-y: auto; 
+  background-color: var(--light-blue);
+  width: calc(100% - 260px);
 }
 
-.header-brand img {
-  height: 45px;
-  width: auto;
-}
+.dashboard-section { display: none; }
+.dashboard-section.active { display: block; }
 
-.header-brand h1 {
-  font-size: 1.3rem;
-  letter-spacing: 0.5px;
-}
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+.stat-card { background: var(--white); padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid var(--primary-blue); }
+.stat-card h3 { font-size: 0.85rem; color: #718096; }
+.stat-card p { font-size: 1.8rem; font-weight: bold; color: var(--dark-blue); margin-top: 5px; }
 
-.app-footer {
-  margin-top: auto;
-  background-color: var(--primary-color);
-  color: var(--white);
-  text-align: center;
-  padding: 15px;
-  font-size: 0.85rem;
-}
+/* Kotak Login & Kandidat Awal */
+.container-box { max-width: 500px; margin: 60px auto; background: var(--white); padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.candidate-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 25px; }
+.candidate-card { border: 1px solid var(--gray); border-radius: 10px; padding: 20px; text-align: center; background: var(--white); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.candidate-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
+.candidate-card h3 { color: var(--dark-blue); }
 
-/* ==========================================
-   CONTAINER & FORM LOGIN
-   ========================================== */
-.container-box {
-  max-width: 420px;
-  margin: 60px auto;
-  background: var(--white);
-  padding: 35px 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-}
-
-form label {
-  display: block;
-  margin-top: 15px;
-  margin-bottom: 5px;
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-form input[type="text"],
-form input[type="password"],
-form input[type="number"],
-form input[type="datetime-local"],
-form select,
-form textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--gray);
-  border-radius: 6px;
-  font-size: 0.95rem;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-form input:focus,
-form select:focus,
-form textarea:focus {
-  border-color: var(--primary-color);
-}
-
-/* ==========================================
-   BUTTONS
-   ========================================== */
-button, .btn-primary, .btn-danger, .btn-success, .btn-warning {
-  padding: 10px 18px;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
-}
-
-button:hover {
-  opacity: 0.9;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-.btn-primary {
-  background-color: var(--primary-color);
-  color: var(--white);
-}
-
-.btn-danger {
-  background-color: var(--danger);
-  color: var(--white);
-}
-
-.btn-success {
-  background-color: var(--success);
-  color: var(--white);
-}
-
-.btn-warning {
-  background-color: var(--warning);
-  color: var(--white);
-}
-
-/* ==========================================
-   KARTU KANDIDAT & GRID (VOTER PANEL)
-   ========================================== */
-.candidate-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 25px;
-  max-width: 1200px;
-  margin: 30px auto;
-}
-
-.candidate-card {
-  border: 1px solid var(--gray);
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  background: var(--white);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.2s;
-}
-
-.candidate-card:hover {
-  transform: translateY(-4px);
-}
-
-.candidate-card img {
-  width: 100% !important;
-  height: 300px !important;
-  object-fit: contain !important; 
-  background-color: #ffffff !important; 
-  border-radius: 8px !important;
-  margin-bottom: 15px !important;
-  padding: 5px; 
-  border: 1px solid #f0f0f0;
-}
-
-.candidate-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: var(--dark-blue);
-  margin: 8px 0;
-}
-
-.candidate-names {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--dark-gray);
-  margin-bottom: 15px;
-  min-height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ==========================================
-   ADMIN LAYOUT & SIDEBAR
-   ========================================== */
-.admin-layout {
-  display: flex;
-  min-height: calc(100vh - 120px);
-}
-
-.sidebar {
-  width: 240px;
-  background: #153b6c;
-  color: var(--white);
-  padding: 25px 0;
-  flex-shrink: 0;
-}
-
-.sidebar h3 {
-  padding: 0 20px 15px 20px;
-  font-size: 1.1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  margin-bottom: 15px;
-}
-
-.sidebar ul {
-  list-style: none;
-}
-
-.sidebar .menu-item {
-  padding: 12px 25px;
-  cursor: pointer;
-  transition: background 0.2s;
-  font-size: 0.95rem;
-}
-
-.sidebar .menu-item:hover,
-.sidebar .menu-item.active {
-  background: var(--primary-color);
-  font-weight: bold;
-}
-
-.main-content {
-  flex: 1;
-  padding: 30px;
-  background: var(--bg-color);
-  overflow-x: auto;
-}
-
-.dashboard-section {
+/* =========================================
+   GLOBAL CUSTOM ALERT & CONFIRM MODAL 
+   ========================================= */
+#global-modal-overlay {
   display: none;
-}
-
-.dashboard-section.active {
-  display: block;
-}
-
-/* STAT CARDS */
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.stat-card {
-  background: var(--white);
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  border-left: 5px solid var(--primary-color);
-}
-
-.stat-card h3 {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 8px;
-}
-
-.stat-card p {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: var(--dark-blue);
-}
-
-/* TABEL RESPONSIVE */
-.table-responsive {
-  width: 100%;
-  overflow-x: auto;
-  margin-top: 15px;
-  background: var(--white);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-table th, table td {
-  padding: 12px 15px;
-  border-bottom: 1px solid #eee;
-  font-size: 0.9rem;
-}
-
-table th {
-  background-color: #f8f9fa;
-  font-weight: bold;
-  color: var(--dark-blue);
-}
-
-table tbody tr:hover {
-  background-color: #fdfdfd;
-}
-
-/* ==========================================
-   HASIL SUARA & CHART CARDS
-   ========================================== */
-.total-suara-box {
-  text-align: center;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: var(--dark-blue);
-  margin: 15px 0 20px 0;
-  background: var(--light-blue);
-  padding: 12px;
-  border-radius: 8px;
-}
-
-.hasil-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-top: 25px;
-}
-
-.hasil-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
   padding: 15px;
-  text-align: center;
+}
+
+#global-modal-box {
   background: var(--white);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.hasil-card img {
+  padding: 25px;
+  border-radius: 12px;
   width: 100%;
-  height: 190px;
-  object-fit: contain;
-  background: #ffffff;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  border: 1px solid #f0f0f0;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  transform: translateY(-20px);
+  transition: transform 0.3s ease;
 }
 
-.percentage-badge {
-  display: inline-block;
-  background: var(--dark-blue);
-  color: var(--white);
-  padding: 6px 15px;
-  border-radius: 20px;
-  font-weight: bold;
-  font-size: 1.1rem;
-  margin-top: 6px;
+#global-modal-overlay.show { display: flex; opacity: 1; }
+#global-modal-overlay.show #global-modal-box { transform: translateY(0); }
+#global-modal-title { color: var(--dark-blue); font-size: 1.2rem; margin-bottom: 10px; }
+#global-modal-message { color: var(--text-dark); margin-bottom: 25px; font-size: 1rem; line-height: 1.5; }
+.global-modal-btn { padding: 10px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; min-width: 100px; }
+
+/* =========================================
+   MEDIA QUERIES (RESPONSIF HP / MOBILE)
+   ========================================= */
+@media screen and (max-width: 768px) {
+  header.app-header { padding: 10px 15px; }
+  .header-brand img { height: 35px; }
+  .header-brand h1 { font-size: 0.9rem; }
+
+  .admin-layout { flex-direction: column !important; }
+  .sidebar { width: 100% !important; min-width: 100%; padding: 10px 0; }
+  .sidebar h3 { display: none; }
+  .sidebar ul { display: flex; overflow-x: auto; margin-top: 0; white-space: nowrap; }
+  .sidebar li { padding: 10px 15px; border-left: none; border-bottom: 3px solid transparent; display: inline-block; }
+  .sidebar li:hover, .sidebar li.active { border-left: none; border-bottom: 3px solid var(--white); }
+
+  .main-content { padding: 15px; width: 100% !important; }
+
+  .card-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-card p { font-size: 1.3rem; }
+
+  .container-box { margin: 20px 15px; padding: 20px; }
 }
 
-.vote-detail {
-  font-size: 0.85rem;
-  color: #666;
-  margin-top: 5px;
-}
-
-/* ==========================================
-   MEDIA QUERIES (MOBILE RESPONSIVE)
-   ========================================== */
-@media (max-width: 768px) {
-  .admin-layout {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    padding: 15px 0;
-  }
-
-  .sidebar ul {
-    display: flex;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .sidebar .menu-item {
-    padding: 10px 15px;
-  }
-
-  .main-content {
-    padding: 15px;
-  }
+@media screen and (max-width: 480px) {
+  .card-grid { grid-template-columns: 1fr; }
+  .header-brand { gap: 8px; }
+  .header-brand h1 { font-size: 0.8rem; }
 }
