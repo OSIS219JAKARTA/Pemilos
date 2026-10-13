@@ -67,20 +67,22 @@
     </div>
   </header>
 
-  <!-- Login Admin Box -->
-  <div id="admin-login-box" style="display: none; max-width: 400px; margin: 80px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-    <h2 style="text-align:center; color:var(--dark-blue); margin-bottom:20px;">Login Admin</h2>
+  <!-- Login Admin Box (Diubah ke display: block agar tampil di awal) -->
+  <div id="admin-login-box" style="display: block; max-width: 400px; margin: 60px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+    <h2 style="text-align:center; color:var(--dark-blue, #1b4f91); margin-bottom:20px;">Login Admin</h2>
     <form id="admin-login-form">
-      <label for="admin-user">Email:</label>
+      <label for="admin-user">Email / Username:</label>
       <input type="text" id="admin-user" required placeholder="Username Admin">
+      
       <label for="admin-pass">Password:</label>
       <input type="password" id="admin-pass" required placeholder="Password">
+      
       <button type="submit" class="btn-primary" style="width: 100%;">Masuk Dashboard</button>
       <button type="button" class="btn-danger" style="width: 100%; margin-top:10px;" onclick="location.href='index.html'">Kembali</button>
     </form>
   </div>
 
-  <!-- Dashboard Container -->
+  <!-- Dashboard Container (Ditampilkan saat admin berhasil login via JS) -->
   <div id="admin-dashboard" class="admin-layout" style="display: none;">
     <div class="sidebar">
       <h3>Menu Admin</h3>
@@ -91,7 +93,7 @@
         <li class="menu-item" data-target="pemilihan">Pemilihan</li>
         <li class="menu-item" data-target="hasil">Hasil Suara</li>
         <li class="menu-item" data-target="laporan">Laporan</li>
-        <li class="menu-item" id="logout-menu" style="margin-top: 30px; background:var(--danger);">Logout</li>
+        <li class="menu-item" id="logout-menu" style="margin-top: 30px; background:var(--danger, #e53e3e);">Logout</li>
       </ul>
     </div>
 
@@ -206,7 +208,7 @@
         </div>
       </div>
 
-      <!-- 4. HASIL SUARA (DIPERBARUI PERTENTASE & FOTO PASLON) -->
+      <!-- 4. HASIL SUARA -->
       <div id="section-hasil" class="dashboard-section">
         <h2>Hasil Suara Pemilihan</h2>
         
@@ -222,7 +224,6 @@
           Total Suara Masuk: 0 Suara
         </div>
 
-        <!-- Canvas Chart Persentase -->
         <div style="background: white; padding: 20px; border-radius: 8px; max-width: 100%; height: 350px;">
           <canvas id="adminBarChart"></canvas>
         </div>
@@ -231,7 +232,6 @@
           Ringkasan Persentase Suara Paslon
         </h3>
 
-        <!-- Grid Kartu Paslon di Admin -->
         <div id="admin-hasil-cards-container" class="hasil-cards-grid"></div>
       </div>
 
