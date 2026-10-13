@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Admin Dashboard - SMPN 219 Jakarta</title>
-  <link rel="icon" type="image/png" href="Assets/img/logo_osis.png">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link rel="icon" type="image/png" href="Assets/img/logo_osis.png">
   <style>
+    /* Styling Tambahan Khusus Grid Hasil Suara di Admin */
     .total-suara-box {
       text-align: center;
       font-size: 1.1rem;
@@ -205,7 +206,7 @@
         </div>
       </div>
 
-      <!-- 4. HASIL SUARA -->
+      <!-- 4. HASIL SUARA (DIPERBARUI PERTENTASE & FOTO PASLON) -->
       <div id="section-hasil" class="dashboard-section">
         <h2>Hasil Suara Pemilihan</h2>
         
@@ -221,6 +222,7 @@
           Total Suara Masuk: 0 Suara
         </div>
 
+        <!-- Canvas Chart Persentase -->
         <div style="background: white; padding: 20px; border-radius: 8px; max-width: 100%; height: 350px;">
           <canvas id="adminBarChart"></canvas>
         </div>
@@ -229,6 +231,7 @@
           Ringkasan Persentase Suara Paslon
         </h3>
 
+        <!-- Grid Kartu Paslon di Admin -->
         <div id="admin-hasil-cards-container" class="hasil-cards-grid"></div>
       </div>
 
